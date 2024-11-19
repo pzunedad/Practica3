@@ -7,12 +7,14 @@ export enum Estado{
 
 
 export type Nino = {
+    id: string;
     nombre: string; // Nombre del niño (unico y obligatorio)
     comportamiento: Estado; // Comportamiento del niño
     ubicacion: Lugar; // ID de la ubicación donde se encuentra el niño
   };
   
 export type Lugar = {
+    id: string;
     nombre: string; // Nombre del lugar (único y obligatorio)
     coordenadas: Estado; // Coordenadas del lugar
     numero_ninos_buenos: number; // Número de niños buenos asociados a este lugar
