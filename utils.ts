@@ -38,3 +38,17 @@ export const haversine = (lat1: number, lon1: number, lat2: number, lon2: number
 
   return R * c; // Distancia en km
 };
+
+export function validarCoordenadas(lat: number, lon: number): boolean {
+  // Validar latitud: debe estar entre -90 y 90
+  if (lat < -90 || lat > 90) {
+    return false;
+  }
+
+  // Validar longitud: debe estar entre -180 y 180
+  if (lon < -180 || lon > 180) {
+    return false;
+  }
+
+  return true;
+}

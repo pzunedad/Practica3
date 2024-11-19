@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
-import type {} from "./types.ts";
-import {} from "./utils.ts";
+import type {NinoModel, LugarModel} from "./types.ts";
+import { getNinosBuenos, getNinosMalos, getEntregas, getRuta } from "./resolvers.ts";
 
 const MONGO_URL = Deno.env.get("MONGO_URL");
 
@@ -14,8 +14,8 @@ await client.connect();
 // Database Name
 const db = client.db("Ubicacion");
 
-//const personasCollection = db.collection<personasModel>("personas");
-//const friendsCollection = db.collection<friendsModel>("friends");
+const ninosCollection = db.collection<NinoModel>("ninos");
+const lugarCollection = db.collection<LugarModel>("lugares");
 
 const handler = async (req:Request): Promise<Response> =>{
     const method = req.method;
@@ -24,12 +24,17 @@ const handler = async (req:Request): Promise<Response> =>{
 
     if(method === "GET"){
         if(path === "/ninos/buenos"){
+            const ninos = await getNinosBuenos(ninosCollection, lugarCollection);
+            return new Response(JSON.stringify(ninos), { status: 200 });
         } else if(path  === "/ninos/malos"){
-
+            const ninos = await getNinosMalos(ninosCollection, lugarCollection);
+            return new Response(JSON.stringify(ninos), { status: 200 });
         } else if(path === "/entregas"){
-
+            const entregas = await getEntregas(lugarCollection);
+            return new Response(JSON.stringify(entregas), { status: 200 });
         } else if(path === "/ruta"){
-
+            const ruta = await getRuta(lugarCollection);
+            return new Response(JSON.stringify(ruta), { status: 200});
         }
     } else if(method === "POST"){
         if(path === "/ubicacion"){
