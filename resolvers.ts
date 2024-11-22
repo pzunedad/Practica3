@@ -33,3 +33,67 @@ export const getRuta = async (LugarCollection: Collection<LugarModel>) => {
 
     return distanciaTotal;
 }
+
+//POST 
+
+export const postNino = async (NinoCollection: Collection<NinoModel>, LugarCollection: Collection<LugarModel>, nombre: string, comportamiento: "bueno" | "malo", ubicacion: string) => {
+
+    // Validación básica
+    if (!nombre || !comportamiento || !ubicacion) {
+      throw new Error( "Error: Todos los campos son obligatorios" );
+    }
+
+    // Verificar que la ubicación existe
+    const lugar = await LugarCollection.findOne({ _id: new ObjectId(ubicacion) });
+    if (!lugar) {
+      throw new Error ("Error: Ubicación no encontrada");
+    }
+
+    // Crear el modelo del niño
+    const nuevoNino = {
+      nombre,
+      comportamiento,
+      ubicacion: new ObjectId(ubicacion),
+    };
+
+    // Insertar el niño en la colección
+    const result = await NinoCollection.insertOne(nuevoNino);
+
+    // Actualizar el contador si el niño es bueno
+    if (comportamiento === "bueno") {
+      await LugarCollection.updateOne(
+        { _id: new ObjectId(ubicacion) },
+        { $inc: { numero_ninos_buenos: 1 } }
+      );
+    }   
+
+}
+
+
+export const postLugar = async (LugarCollection: Collection<LugarModel>, nombre: string, coordenadas: {lat: number, lon: number}) =>{
+
+    const { lat, lon } = coordenadas;
+    // Validación básica
+    if (!nombre || !coordenadas || !lat || !lon) {
+      throw new Error ("Error: Todos los campos son obligatorios");
+    }
+
+    // Validar las coordenadas
+    if (validarCoordenadas(lat,lon)) {
+      throw new Error ("Error: Coordenadas inválidas");
+    }
+
+    // Crear el modelo de la ubicación
+    const nuevaUbicacion = {
+      nombre,
+      coordenadas: { lat, lon },
+      numero_ninos_buenos: 0, // Inicia con 0 niños buenos
+    };
+
+    // Insertar la ubicación en la colección
+    const result = await LugarCollection.insertOne(nuevaUbicacion);
+
+    return result;
+
+
+}
