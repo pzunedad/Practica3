@@ -10,7 +10,7 @@ export const getNinosBuenos = async (ninoCollection: Collection<NinoModel>, Luga
 
 // Obtener niños malos
 export const getNinosMalos = async (ninoCollection: Collection<NinoModel>, LugarCollection: Collection<LugarModel>) => {
-    const ninos = await ninoCollection.find({ behavior: "malos" }).toArray();
+    const ninos = await ninoCollection.find({ behavior: "malo" }).toArray();
     return Promise.all(ninos.map(nino => fromModelToNino(nino, LugarCollection)));
 };
 
