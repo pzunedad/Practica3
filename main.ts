@@ -50,4 +50,4 @@ const handler = async (req:Request): Promise<Response> =>{
     return new Response ("endpoint not found", {status: 404});
 }
 
-Deno.serve({ port: 6768 }, handler);
+Deno.serve({ port: 6769 }, handler);
