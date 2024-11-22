@@ -6,7 +6,7 @@ const MONGO_URL = Deno.env.get("MONGO_URL");
 
 if(!MONGO_URL){
   console.error("Mongo url is not set")
-  Deno.exit(1);
+  Deno.exit();
 }
 const client = new MongoClient(MONGO_URL);
 await client.connect();
