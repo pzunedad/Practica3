@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
 import type {NinoModel, LugarModel} from "./types.ts";
-import { getNinosBuenos, getNinosMalos, getEntregas, getRuta } from "./resolvers.ts";
+import { getNinosBuenos, getNinosMalos, getEntregas, getRuta, postLugar, postNino } from "./resolvers.ts";
 
 const MONGO_URL = Deno.env.get("MONGO_URL");
 
@@ -38,9 +38,13 @@ const handler = async (req:Request): Promise<Response> =>{
         }
     } else if(method === "POST"){
         if(path === "/ubicacion"){
-
+            const {nombre, coordenadas} = await req.json();
+            const ubicacion = await postLugar(lugarCollection,nombre,coordenadas);
+            return new Response(JSON.stringify(ubicacion), { status: 200});
         } else if (path === "/ninos"){
-
+            const {nombre, estado, ubicacion} = await req.json();
+            const nino = await postNino(ninosCollection,lugarCollection,nombre, estado, ubicacion);
+            return new Response(JSON.stringify(nino), { status: 200});
         }
     }
     return new Response ("endpoint not found", {status: 404});
